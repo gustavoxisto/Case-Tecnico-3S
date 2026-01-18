@@ -1,21 +1,11 @@
-""" 
-    Um jogo com tabuleiro unidirecional comporta dois jogadores. Vence quem chegar primeiro a última casa do tabuleiro com menos turnos.
-
-    Para caminhar com as peças, os jogadores utilizam uma roleta que sorteia se devem andar 1, 2 ou 3 casas.
-
-    Caso tire um número maior na roleta, que casas faltantes, o jogador deve iniciar novamente o percurso (como um looping), por exemplo, 
-    se faltam apenas duas casas para eu ganhar, e tiro 3 na roleta, devo caminhar as duas faltantes mais uma até a primeira casa do 
-    tabuleiro, reiniciando todo o percurso.
-
-    Regra: O tamanho mínimo do tabuleiro deve ser 3 casas sem um máximo.
-    
-    Crie uma função que recebe o número de casas do tabuleiro e devolve:
-        1 - Quantidade mínimo de turnos para se chegar ao destino (caminho ótimo);
-        2 - Probabilidade de um usuário conseguir executar o caminho ótimo;
-        3 - Quantas combinações de movimentos diferentes um jogador conseguiria executar sem efetuar nenhum looping no tabuleiro.
-"""
-
 import math
+from dataclasses import dataclass
+
+@dataclass
+class BoardGameInfo:
+    min_turns: int
+    optimal_probability: float
+    no_loop_combinations: int
 
 class BoardGame:
 
@@ -31,6 +21,22 @@ class BoardGame:
         self._no_loop_combinations = None
         self._paths_cache = {}
 
+    def get_min_turns(self) -> int:
+        return self._get_min_turns()
+
+    def get_optimal_probability(self) -> float:
+        return self._get_optimal_probability()
+
+    def get_no_loop_combinations(self) -> int:
+        return self._get_no_loop_combinations()
+
+    def get_info(self) -> BoardGameInfo:
+        return BoardGameInfo(
+            min_turns= self.get_min_turns(),
+            optimal_probability= self.get_optimal_probability(),
+            no_loop_combinations= self.get_no_loop_combinations()
+        )
+    
     def _get_min_turns(self) -> int:
         if self._min_turns is None:
             self._min_turns = math.ceil(self.distance / 3)
@@ -75,24 +81,10 @@ class BoardGame:
             self._no_loop_combinations = self._count_paths(self.distance)
         return self._no_loop_combinations
 
-    def get_min_turns(self) -> int:
-        return self._get_min_turns()
-
-    def get_optimal_probability(self) -> float:
-        return self._get_optimal_probability()
-
-    def get_no_loop_combinations(self) -> int:
-        return self._get_no_loop_combinations()
-
-    def get_info(self) -> dict:
-        return {
-            "min_turns": self.get_min_turns(),
-            "optimal_probability": self.get_optimal_probability(),
-            "no_loop_combinations": self.get_no_loop_combinations()
-        }
 
 if __name__ == '__main__':
-    for number in [3, 4, 5, 6, 7, 8, 9, 10]:
+    range_test = [3, 4, 5, 6, 7, 8, 9, 10]
+    for number in range_test:
         game = BoardGame(number)
         result = game.get_info()
         print(f"Result for board size {number}: {result}")

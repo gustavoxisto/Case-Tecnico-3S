@@ -1,18 +1,6 @@
-"""
-    Considerando a sequência numérica a seguir (11, 18, 25, 32, 39... ) faça uma função que recebe como entrada uma posição e devolve 
-    qual o valor do número naquela posição, considerando a sequência numérica apresentada, para todos os efeitos, a sequência começa 
-    da posição 1.
-    
-    Ex:
-        print_valor(x=1) retornará 11; print_valor(x=2) retornará 18; print_valor(x=200) retornará 1404;
-        print_valor(x=254) retornará 1.782;
-        print_valor(x=3.542.158) retornará 24.795.110;
-"""
-
-first_term = 11
-common_difference = 7
-
 def get_sequence_value(position: int) -> int:
+    first_term = 11
+    common_difference = 7
     return first_term + (position - 1) * common_difference
 
 if __name__ == '__main__':

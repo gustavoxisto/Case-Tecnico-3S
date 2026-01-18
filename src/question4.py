@@ -1,12 +1,11 @@
-"""
-    Escreva uma função que calcula o quanto um funcionário tem a receber de dois benefícios: Férias e Décimo Terceiro Salário ao 
-    pedir demissão.
-
-    Simplificando o cenário, as férias zeram a cada aniversário de emprego (ou seja, ele sempre tirou as férias corretamente) 
-    e o décimo terceiro zera a cada virada de ano (não fica nenhum valor residual de um ano para outro).
-"""
-
 from datetime import date
+from dataclasses import dataclass
+
+@dataclass
+class TerminationSalaryInfo:
+    vacation_pay: float
+    thirteenth_salary: float
+    total: float
 
 class TerminationSalary:
 
@@ -21,6 +20,25 @@ class TerminationSalary:
         self._vacation_months = None
         self._thirteenth_months = None
 
+    def get_vacation_pay(self) -> float:
+        vacation_months = self._get_vacation_months()
+        return self.salary * vacation_months / 12
+    
+    def get_thirteenth_salary(self) -> float:
+        thirteenth_months = self._get_thirteenth_months()
+        return self.salary * thirteenth_months / 12
+
+    def calculate(self) -> TerminationSalaryInfo:
+        vacation_pay = round(self.get_vacation_pay(), 2)
+        thirteenth_salary = round(self.get_thirteenth_salary(), 2)
+        total = round(vacation_pay + thirteenth_salary, 2)
+
+        return TerminationSalaryInfo(
+            vacation_pay = vacation_pay,
+            thirteenth_salary = thirteenth_salary,
+            total = total
+        )
+    
     def _get_last_anniversary(self) -> date:
         if self._last_anniversary is not None:
             return self._last_anniversary
@@ -46,11 +64,10 @@ class TerminationSalary:
             return self._vacation_months
         
         last_anniversary = self._get_last_anniversary()
-        
-        vacation_months = (
-            (self.termination_date.year - last_anniversary.year) * 12
-            + (self.termination_date.month - last_anniversary.month)
-        )
+
+        years_diff = self.termination_date.year - last_anniversary.year
+        months_diff = self.termination_date.month - last_anniversary.month
+        vacation_months = (years_diff * 12) + months_diff
 
         if self.termination_date.day >= last_anniversary.day:
             vacation_months += 1
@@ -69,23 +86,6 @@ class TerminationSalary:
         self._thirteenth_months = thirteenth_months
         return thirteenth_months
     
-    def get_vacation_value(self) -> float:
-        vacation_months = self._get_vacation_months()
-        return self.salary * vacation_months / 12
-    
-    def get_thirteenth_value(self) -> float:
-        thirteenth_months = self._get_thirteenth_months()
-        return self.salary * thirteenth_months / 12
-
-    def calculate(self) -> dict:
-        vacation_value = self.get_vacation_value()
-        thirteenth_value = self.get_thirteenth_value()
-
-        return {
-            "vacation_pay": round(vacation_value, 2),
-            "thirteenth_salary": round(thirteenth_value, 2),
-            "total": round(vacation_value + thirteenth_value, 2)
-        }
 
 if __name__ == '__main__':
     salary = 5000.00
